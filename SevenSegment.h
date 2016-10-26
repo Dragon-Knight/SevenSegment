@@ -52,7 +52,7 @@ class SevenSegment : public SevenSegmentCore<SEVENSEGMENT_DIGITS>
 			ltoa(number, characters, 10);
 
 			uint8_t idx = 0;
-			for(int8_t i = 0; i < SEVENSEGMENT_DIGITS; i++)
+			for(int8_t i = 0; i < SEVENSEGMENT_DIGITS; ++i)
 			{
 				if(characters[i] == 0x00)
 				{
@@ -81,7 +81,7 @@ class SevenSegment : public SevenSegmentCore<SEVENSEGMENT_DIGITS>
 			dtostrf(number, SEVENSEGMENT_DIGITS, 1, characters);
 
 			uint8_t idx = 0;
-			for(int8_t i = 0; i < SEVENSEGMENT_DIGITS; i++)
+			for(int8_t i = 0; i < SEVENSEGMENT_DIGITS; ++i)
 			{
 				if(characters[idx] == 0x00)
 				{

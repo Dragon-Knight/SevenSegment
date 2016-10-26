@@ -14,8 +14,14 @@ SevenSegment display(pinDigits, &PORTA);
 
 
 uint32_t lastTime = 0;
-int32_t iter = -10;
+int32_t iter = 0;
 float iter2 = -10.0;
+
+
+
+byte qqq[] = {0b00000011, 0b00000110, 0b00001100, 0b00011000, 0b00110000, 0b00100001};
+byte qqqq[] = {0b00000111, 0b00001110, 0b00011100, 0b00111000, 0b00110001, 0b00100011};
+
 
 void setup()
 {
@@ -31,12 +37,18 @@ void setup()
 	
 	delay(500);
 	
+	display.Clear();
 	display.SetRAW(2, 0b10000000);
 	display.SetRAW(3, 0b00000001);
 	
 	delay(500);
 	
 	display.Clear();
+	for(uint32_t i = 0; i < 1000; ++i)
+	{
+		display.SetRAW(3, qqqq[i % 6]);
+		delay(100);
+	}
 	
 	return;
 }
@@ -45,7 +57,7 @@ void loop()
 {
 	uint32_t time = millis();
 	
-	if(lastTime + 10 <= time)
+	if(lastTime + 1 <= time)
 	{
 		lastTime = time;
 		iter++;

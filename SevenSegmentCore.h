@@ -50,7 +50,7 @@ class SevenSegmentCore
 		SevenSegmentCore(const uint8_t *pinDigits, const uint8_t *pinSegments)
 		#endif
 		{
-			for(uint8_t i = 0; i < _digits; i++)
+			for(uint8_t i = 0; i < _digits; ++i)
 			{
 				this->_digits_base[i] = PIN_TO_BASEREG(pinDigits[i]);
 				this->_digits_mask[i] = PIN_TO_BITMASK(pinDigits[i]);
@@ -66,7 +66,7 @@ class SevenSegmentCore
 			this->_port = port;
 			*((this->_port)-1) = 0b11111111;
 			#else
-			for(uint8_t i = 0; i < 8; i++)
+			for(uint8_t i = 0; i < 8; ++i)
 			{
 				this->_segments_base[i] = PIN_TO_BASEREG(pinSegments[i]);
 				this->_segments_mask[i] = PIN_TO_BITMASK(pinSegments[i]);
@@ -131,7 +131,7 @@ class SevenSegmentCore
 		
 		void Clear()
 		{
-			for(uint8_t i = 0; i < _digits; i++)
+			for(uint8_t i = 0; i < _digits; ++i)
 			{
 				this->_drawingData[i] = 0x00;
 				this->_drawingDataIndex = 0;
@@ -142,65 +142,54 @@ class SevenSegmentCore
 		
 		void Lighting()
 		{
-			if(this->_drawingDataIndex == _digits - 1)
+			// Выключаем предыдущий разряд //
+			this->Dimming();
+			// //
+			
+			// Итератор //
+			if(++this->_drawingDataIndex == _digits)
 			{
 				this->_drawingDataIndex = 0;
 			}
-			else
-			{
-				this->_drawingDataIndex++;
-			}
+			// //
 			
-			for(uint8_t i = 0; i < _digits; i++)
+			if(this->_power == true)
 			{
-				if(i == this->_drawingDataIndex && this->_power == true) // Топорик, но может и норм. Проблема что когда мы выключаем экран, катоды всегда будут выключены, а вот на анодах застынет последняя 'цифра'
+				#if defined(SEVENSEGMENT_USE_PORT)
+				*(this->_port) = this->_drawingData[this->_drawingDataIndex];
+				#else
+				for(uint8_t s = 0; s < 8; ++s)
 				{
-					#if defined(SEVENSEGMENT_USE_PORT)
-					*(this->_port) = this->_drawingData[i];
-					#else
-					for(uint8_t s = 0; s < 8; s++)
+					if(bitRead(this->_drawingData[this->_drawingDataIndex], s) == HIGH)
 					{
-						if(bitRead(this->_drawingData[i], s) == HIGH)
-						{
-							// Включаем нужный сегмент //
-							#if defined(SEVENSEGMENT_INVERT_ANODE)
-							DIRECT_WRITE_LOW(this->_segments_base[s], this->_segments_mask[s]);
-							#else
-							DIRECT_WRITE_HIGH(this->_segments_base[s], this->_segments_mask[s]);
-							#endif
-							// //
-						}
-						else
-						{
-							// Выключаем нужный сегмент //
-							#if defined(SEVENSEGMENT_INVERT_ANODE)
-							DIRECT_WRITE_HIGH(this->_segments_base[s], this->_segments_mask[s]);
-							#else
-							DIRECT_WRITE_LOW(this->_segments_base[s], this->_segments_mask[s]);
-							#endif
-							// //
-						}
+						// Включаем нужный сегмент //
+						#if defined(SEVENSEGMENT_INVERT_ANODE)
+						DIRECT_WRITE_LOW(this->_segments_base[s], this->_segments_mask[s]);
+						#else
+						DIRECT_WRITE_HIGH(this->_segments_base[s], this->_segments_mask[s]);
+						#endif
+						// //
 					}
-					#endif
-					
-					// Включаем нужный разряд //
-					#if defined(SEVENSEGMENT_INVERT_CATHODE)
-					DIRECT_WRITE_LOW(this->_digits_base[i], this->_digits_mask[i]);
-					#else
-					DIRECT_WRITE_HIGH(this->_digits_base[i], this->_digits_mask[i]);
-					#endif
-					// //
+					else
+					{
+						// Выключаем нужный сегмент //
+						#if defined(SEVENSEGMENT_INVERT_ANODE)
+						DIRECT_WRITE_HIGH(this->_segments_base[s], this->_segments_mask[s]);
+						#else
+						DIRECT_WRITE_LOW(this->_segments_base[s], this->_segments_mask[s]);
+						#endif
+						// //
+					}
 				}
-				else
-				{
-					// Выключаем ненужные разряды //
-					#if defined(SEVENSEGMENT_INVERT_CATHODE)
-					DIRECT_WRITE_HIGH(this->_digits_base[i], this->_digits_mask[i]);
-					#else
-					DIRECT_WRITE_LOW(this->_digits_base[i], this->_digits_mask[i]);
-					#endif
-					// //
-				}
+				#endif
+				
+				// Включаем нужный разряд //
+				#if defined(SEVENSEGMENT_INVERT_CATHODE)
+				DIRECT_WRITE_LOW(this->_digits_base[this->_drawingDataIndex], this->_digits_mask[this->_drawingDataIndex]);
+				#else
+				DIRECT_WRITE_HIGH(this->_digits_base[this->_drawingDataIndex], this->_digits_mask[this->_drawingDataIndex]);
+				#endif
+				// //
 			}
 			
 			return;
@@ -208,7 +197,7 @@ class SevenSegmentCore
 		
 		void Dimming()
 		{
-			// Выключаем ненужные разряды //
+			// Выключаем текущий разряд //
 			#if defined(SEVENSEGMENT_INVERT_CATHODE)
 			DIRECT_WRITE_HIGH(this->_digits_base[this->_drawingDataIndex], this->_digits_mask[this->_drawingDataIndex]);
 			#else

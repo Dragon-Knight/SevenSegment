@@ -1,6 +1,6 @@
 /*
 	SevenSegmentFont.h - Шрифт для семисегментного индикатора.
-	Автор: Dragon_Knight, 2016 ( https://new.vk.com/globalzone_edev ).
+	Автор: Dragon_Knight, 2016 ( https://vk.com/globalzone_edev ).
 */
 
 #ifndef SevenSegmentFont_h

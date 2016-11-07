@@ -1,6 +1,6 @@
 /*
 	SevenSegmentCore.h - Класс динамической индикации семисегментного индикатора.
-	Автор: Dragon_Knight, 2016 ( https://new.vk.com/globalzone_edev ).
+	Автор: Dragon_Knight, 2016 ( https://vk.com/globalzone_edev ).
 	
 	Методы:
 		SevenSegmentCore:
@@ -15,8 +15,8 @@
 		void Dimming() - Принудительное гашение разрядя. Используется для настройки яркости.
 	Константы:
 		SEVENSEGMENT_USE_PORT - Включает указание порта в качестве пинов сегментом.
-		SEVENSEGMENT_INVERT_ANODE - Включает инверсию анодов.
-		SEVENSEGMENT_INVERT_CATHODE - Включает инверсию катодов.
+		SEVENSEGMENT_INVERT_SEGMENTS - Включает инверсию анодов.
+		SEVENSEGMENT_INVERT_DIGITS - Включает инверсию катодов.
 	Примечания:
 		По умолчанию, аноды и катоды имеют включённое состояние - лог. 1, и выключенное состояние - лог. 0,
 		однако и аноды и катоды можно инвертировать. Для этого перед подключением класса используем константы.
@@ -55,7 +55,7 @@ class SevenSegmentCore
 				this->_digits_base[i] = PIN_TO_BASEREG(pinDigits[i]);
 				this->_digits_mask[i] = PIN_TO_BITMASK(pinDigits[i]);
 				DIRECT_MODE_OUTPUT(this->_digits_base[i], this->_digits_mask[i]);
-				#if defined(SEVENSEGMENT_INVERT_CATHODE)
+				#if defined(SEVENSEGMENT_INVERT_DIGITS)
 				DIRECT_WRITE_HIGH(this->_digits_base[i], this->_digits_mask[i]);
 				#else
 				DIRECT_WRITE_LOW(this->_digits_base[i], this->_digits_mask[i]);
@@ -71,7 +71,7 @@ class SevenSegmentCore
 				this->_segments_base[i] = PIN_TO_BASEREG(pinSegments[i]);
 				this->_segments_mask[i] = PIN_TO_BITMASK(pinSegments[i]);
 				DIRECT_MODE_OUTPUT(this->_segments_base[i], this->_segments_mask[i]);
-				#if defined(SEVENSEGMENT_INVERT_ANODE)
+				#if defined(SEVENSEGMENT_INVERT_SEGMENTS)
 				DIRECT_WRITE_HIGH(this->_segments_base[i], this->_segments_mask[i]);
 				#else
 				DIRECT_WRITE_LOW(this->_segments_base[i], this->_segments_mask[i]);
@@ -163,7 +163,7 @@ class SevenSegmentCore
 					if(bitRead(this->_drawingData[this->_drawingDataIndex], s) == HIGH)
 					{
 						// Включаем нужный сегмент //
-						#if defined(SEVENSEGMENT_INVERT_ANODE)
+						#if defined(SEVENSEGMENT_INVERT_SEGMENTS)
 						DIRECT_WRITE_LOW(this->_segments_base[s], this->_segments_mask[s]);
 						#else
 						DIRECT_WRITE_HIGH(this->_segments_base[s], this->_segments_mask[s]);
@@ -173,7 +173,7 @@ class SevenSegmentCore
 					else
 					{
 						// Выключаем нужный сегмент //
-						#if defined(SEVENSEGMENT_INVERT_ANODE)
+						#if defined(SEVENSEGMENT_INVERT_SEGMENTS)
 						DIRECT_WRITE_HIGH(this->_segments_base[s], this->_segments_mask[s]);
 						#else
 						DIRECT_WRITE_LOW(this->_segments_base[s], this->_segments_mask[s]);
@@ -184,7 +184,7 @@ class SevenSegmentCore
 				#endif
 				
 				// Включаем нужный разряд //
-				#if defined(SEVENSEGMENT_INVERT_CATHODE)
+				#if defined(SEVENSEGMENT_INVERT_DIGITS)
 				DIRECT_WRITE_LOW(this->_digits_base[this->_drawingDataIndex], this->_digits_mask[this->_drawingDataIndex]);
 				#else
 				DIRECT_WRITE_HIGH(this->_digits_base[this->_drawingDataIndex], this->_digits_mask[this->_drawingDataIndex]);
@@ -198,7 +198,7 @@ class SevenSegmentCore
 		void Dimming()
 		{
 			// Выключаем текущий разряд //
-			#if defined(SEVENSEGMENT_INVERT_CATHODE)
+			#if defined(SEVENSEGMENT_INVERT_DIGITS)
 			DIRECT_WRITE_HIGH(this->_digits_base[this->_drawingDataIndex], this->_digits_mask[this->_drawingDataIndex]);
 			#else
 			DIRECT_WRITE_LOW(this->_digits_base[this->_drawingDataIndex], this->_digits_mask[this->_drawingDataIndex]);

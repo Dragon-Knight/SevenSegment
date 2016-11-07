@@ -1,10 +1,8 @@
-//#define SEVENSEGMENT_INVERT_ANODE
-#define SEVENSEGMENT_INVERT_CATHODE
+//#define SEVENSEGMENT_INVERT_SEGMENTS
+#define SEVENSEGMENT_INVERT_DIGITS
 #define SEVENSEGMENT_USE_PORT
 #define SEVENSEGMENT_DIGITS	4
-
 #include <SevenSegment.h>
-
 
 uint8_t pinDigits[] = {8, 9, 10, 11};
 uint8_t pinSegments[] = {22, 23, 24, 25, 26, 27, 28, 29};
@@ -15,13 +13,9 @@ SevenSegment display(pinDigits, &PORTA);
 
 uint32_t lastTime = 0;
 int32_t iter = 0;
-float iter2 = -10.0;
+float iter2 = 0.0;
 
-
-
-byte qqq[] = {0b00000011, 0b00000110, 0b00001100, 0b00011000, 0b00110000, 0b00100001};
-byte qqqq[] = {0b00000111, 0b00001110, 0b00011100, 0b00111000, 0b00110001, 0b00100011};
-
+byte anim[] = {0b00000111, 0b00001110, 0b00011100, 0b00111000, 0b00110001, 0b00100011};
 
 void setup()
 {
@@ -29,26 +23,33 @@ void setup()
 	Serial.setTimeout(25);
 	
 	display.Begin();
-	display.SetChr(0, '1');
-	display.SetChr(1, '2');
-	display.SetChr(2, '3');
-	display.SetChr(3, '4');
+	
+	display.SetChr(0, 'L');
+	display.SetChr(1, 'O');
+	display.SetChr(2, 'A');
+	display.SetChr(3, 'd');
 	display.SetDot(0, true);
 	
-	delay(500);
+	delay(1000);
 	
 	display.Clear();
-	display.SetRAW(2, 0b10000000);
-	display.SetRAW(3, 0b00000001);
+	display.SetRAW(1, 0b01001001);
+	display.SetRAW(2, 0b00110110);
 	
-	delay(500);
+	delay(1000);
 	
 	display.Clear();
-	for(uint32_t i = 0; i < 1000; ++i)
+	for(uint32_t i = 0; i < sizeof(anim) * 10; ++i)
 	{
-		display.SetRAW(3, qqqq[i % 6]);
+		for(uint8_t j = 0; j < SEVENSEGMENT_DIGITS; ++j)
+		{
+			display.SetRAW(j, anim[i % sizeof(anim)]);
+		}
+		
 		delay(100);
 	}
+	
+	display.Clear();
 	
 	return;
 }
@@ -57,13 +58,16 @@ void loop()
 {
 	uint32_t time = millis();
 	
-	if(lastTime + 1 <= time)
+	if(lastTime + 100 <= time)
 	{
 		lastTime = time;
+		
 		iter++;
 		iter2 += 0.1;
-		display.SetNum(iter);
-		//display.SetNum(iter2);
+		
+		display.SetNum(iter);			// int
+		//display.SetNum(iter2);		// float
+		
 		if(iter % 2 == 0)
 		{
 			display.SetDot(1, true);
@@ -81,7 +85,6 @@ void loop()
 	
 	return;
 }
-
 
 ISR(TIMER2_OVF_vect)
 {

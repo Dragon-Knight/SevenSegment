@@ -39,7 +39,7 @@ class SevenSegment : public SevenSegmentCore<SEVENSEGMENT_DIGITS>
 			return;
 		}
 		
-		void SetNum(int32_t number)		// Установить чисто в указанную позицию, относительно базиса (если в числе появится доп. разряд, то базис определяет направление смещения).
+		void SetNums(int32_t number)		// Установить чисто в указанную позицию, относительно базиса (если в числе появится доп. разряд, то базис определяет направление смещения).
 		{
 			// Допилить возможность выбора базиса для отрисовки строки.
 			
@@ -68,7 +68,7 @@ class SevenSegment : public SevenSegmentCore<SEVENSEGMENT_DIGITS>
 			return;
 		}
 		
-		void SetNum(float number)		// Установить чисто в указанную позицию, относительно базиса (если в числе появится доп. разряд, то базис определяет направление смещения).
+		void SetNums(float number)		// Установить чисто в указанную позицию, относительно базиса (если в числе появится доп. разряд, то базис определяет направление смещения).
 		{
 			// Допилить возможность выбора базиса для отрисовки строки.
 			
@@ -102,17 +102,13 @@ class SevenSegment : public SevenSegmentCore<SEVENSEGMENT_DIGITS>
 			return;
 		}
 		
-		
-		
-		
-		
 		void SetBrightness(uint8_t brightness)
 		{
 			if(brightness > 0)
 			{
 				this->SetPower(true);
 				
-				#if defined(__AVR_ATmega168__) || defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__) || defined(__AVR_ATmega2560__)
+				#if defined(__AVR_ATmega168__) || defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__) || defined(__AVR_ATmega2560__) || defined(__AVR_ATmega644__) || defined(__AVR_ATmega644A__) || defined(__AVR_ATmega644P__) || defined(__AVR_ATmega644PA__)
 				OCR2A = brightness;
 				#endif
 			}
@@ -126,44 +122,19 @@ class SevenSegment : public SevenSegmentCore<SEVENSEGMENT_DIGITS>
 		
 		void SetupTimer()
 		{
-			#if defined(__AVR_ATmega168__) || defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__) || defined(__AVR_ATmega2560__)
-			// Timer/Counter 2 initialization
-			// Clock source: System Clock
-			// Clock value: 500,000 kHz
-			// Mode: Normal top=0xFF
-			// OC2A output: Disconnected
-			// OC2B output: Disconnected
-			// Timer Period: 0,512 ms
+			#if defined(__AVR_ATmega168__) || defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__) || defined(__AVR_ATmega2560__) || defined(__AVR_ATmega644__) || defined(__AVR_ATmega644A__) || defined(__AVR_ATmega644P__) || defined(__AVR_ATmega644PA__)
 			ASSR = (0<<EXCLK) | (0<<AS2);
 			TCCR2A = (0<<COM2A1) | (0<<COM2A0) | (0<<COM2B1) | (0<<COM2B0) | (0<<WGM21) | (0<<WGM20);
-			TCCR2B = (0<<WGM22) | (0<<CS22) | (1<<CS21) | (1<<CS20);
+			TCCR2B = (0<<WGM22) | (1<<CS22) | (0<<CS21) | (1<<CS20);
 			TCNT2 = 0x00;
 			OCR2A = 0x80;
 			
-			// Timer/Counter 2 Interrupt(s) initialization
-			TIMSK2 = (0<<OCIE2B) | (1<<OCIE2A) | (1<<TOIE2);
+			TIMSK2=(0<<OCIE2B) | (1<<OCIE2A) | (1<<TOIE2);
 			#endif
 			
 			return;
 		}
-		
-		
-		
-
 	private:
-
-		
 };
 
 #endif
-
-/*
-
-enum SEVENSEGMENT_DIRECTION
-{
-	SEVENSEGMENT_DIRECTION_NONE,
-	SEVENSEGMENT_DIRECTION_LEFT,
-	SEVENSEGMENT_DIRECTION_RIGHT
-};
-
-*/

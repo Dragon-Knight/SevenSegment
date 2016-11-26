@@ -8,6 +8,7 @@
 			В качестве второго параметра выступает или массив сегментов в общепринятом порядке, или ссылка на порт.
 		void SetPower(bool status) - Выключить экран, без очистки.
 		void SetChr(uint8_t position, char character) - Установить указанный символ в указанную позицию.
+		void SetNum(uint8_t position, uint8_t number) - Установить указанное число в указанную позицию.
 		void SetDot(uint8_t position, bool dot) - Установить\Снять точку в указанною позицию.
 		void SetRAW(uint8_t position, byte data) - Установить указанный байт в указанную позицию (Порядок бит как порядок сегментов).
 		void Clear() - Очистить экран.
@@ -97,6 +98,16 @@ class SevenSegmentCore
 			if(position < _digits)
 			{
 				this->_drawingData[position] = pgm_read_byte_near(&SEVENSEGMENTFONT[character] - 32);
+			}
+			
+			return;
+		}
+		
+		void SetNum(uint8_t position, uint8_t number)
+		{
+			if(position < _digits)
+			{
+				this->_drawingData[position] = pgm_read_byte_near(&SEVENSEGMENTFONT[number] + 16);
 			}
 			
 			return;
@@ -197,6 +208,12 @@ class SevenSegmentCore
 		
 		void Dimming()
 		{
+			// Выключаем все сигменты на порту (Что-бы небыло засветки) //
+			#if defined(SEVENSEGMENT_USE_PORT)
+			*(this->_port) = 0b00000000;
+			#endif
+			// //
+			
 			// Выключаем текущий разряд //
 			#if defined(SEVENSEGMENT_INVERT_DIGITS)
 			DIRECT_WRITE_HIGH(this->_digits_base[this->_drawingDataIndex], this->_digits_mask[this->_drawingDataIndex]);

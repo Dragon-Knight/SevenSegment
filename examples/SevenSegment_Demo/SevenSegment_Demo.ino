@@ -65,8 +65,8 @@ void loop()
 		iter++;
 		iter2 += 0.1;
 		
-		display.SetNum(iter);			// int
-		//display.SetNum(iter2);		// float
+		display.SetNums(iter);			// int
+		//display.SetNums(iter2);		// float
 		
 		if(iter % 2 == 0)
 		{

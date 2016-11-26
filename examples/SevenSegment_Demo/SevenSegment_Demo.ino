@@ -4,6 +4,7 @@
 #define SEVENSEGMENT_DIGITS	4
 #include <SevenSegment.h>
 
+// Пример пинов для Arduino Mega 2560.
 uint8_t pinDigits[] = {8, 9, 10, 11};
 uint8_t pinSegments[] = {22, 23, 24, 25, 26, 27, 28, 29};
 

@@ -45,6 +45,7 @@ template <uint8_t _digits>
 class SevenSegmentCore
 {
 	public:
+	
 		#if defined(SEVENSEGMENT_USE_PORT)
 		SevenSegmentCore(const uint8_t *pinDigits, volatile uint8_t *port)
 		#else
@@ -66,6 +67,11 @@ class SevenSegmentCore
 			#if defined(SEVENSEGMENT_USE_PORT)
 			this->_port = port;
 			*((this->_port)-1) = 0b11111111;
+			#if defined(SEVENSEGMENT_INVERT_SEGMENTS)
+			*(this->_port) = 0b11111111;
+			#else
+			*(this->_port) = 0b00000000;
+			#endif
 			#else
 			for(uint8_t i = 0; i < 8; ++i)
 			{
@@ -167,7 +173,11 @@ class SevenSegmentCore
 			if(this->_power == true)
 			{
 				#if defined(SEVENSEGMENT_USE_PORT)
+				#if defined(SEVENSEGMENT_INVERT_SEGMENTS)
+				*(this->_port) = ~this->_drawingData[this->_drawingDataIndex];
+				#else
 				*(this->_port) = this->_drawingData[this->_drawingDataIndex];
+				#endif
 				#else
 				for(uint8_t s = 0; s < 8; ++s)
 				{
@@ -208,9 +218,13 @@ class SevenSegmentCore
 		
 		void Dimming()
 		{
-			// Выключаем все сигменты на порту (Что-бы небыло засветки) //
+			// Выключаем все сегменты на порту (Что-бы не было засветки) //
 			#if defined(SEVENSEGMENT_USE_PORT)
+			#if defined(SEVENSEGMENT_INVERT_SEGMENTS)
+			*(this->_port) = 0b11111111;
+			#else
 			*(this->_port) = 0b00000000;
+			#endif
 			#endif
 			// //
 			
@@ -224,7 +238,9 @@ class SevenSegmentCore
 			
 			return;
 		}
+	
 	private:
+	
 		volatile uint8_t *_digits_base[_digits];
 		uint8_t _digits_mask[_digits];
 		#if defined(SEVENSEGMENT_USE_PORT)

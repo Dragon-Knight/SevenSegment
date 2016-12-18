@@ -9,6 +9,18 @@
 * `SEVENSEGMENT_INVERT_DIGITS` - Инверсия сигнала разрядов индикатора.
 * `SEVENSEGMENT_INVERT_SEGMENTS` - Инверсия сигнала сегментов индикатора.
 
+В целях оптимизации и экономии ресурсов, количество сегментов указывается через константу `SEVENSEGMENT_DIGITS`.
+
+Например:
+```c
+#define SEVENSEGMENT_INVERT_SEGMENTS
+#define SEVENSEGMENT_INVERT_DIGITS
+#define SEVENSEGMENT_USE_PORT
+#define SEVENSEGMENT_DIGITS	4
+#include <SevenSegment.h>
+...
+```
+
 
 
 ### Методы класса

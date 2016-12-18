@@ -1,3 +1,12 @@
+/*
+ *	SevenSegment_Demo.ino
+ *	Demo of Seven Segment Indicator
+ *
+ *	@author		Nikolai Tikhonov aka Dragon_Knight <dubki4132@mail.ru>, https://vk.com/globalzone_edev
+ *	@licenses	MIT https://opensource.org/licenses/MIT
+ *	@repo		https://github.com/Dragon-Knight/SevenSegment
+ */
+
 //#define SEVENSEGMENT_INVERT_SEGMENTS
 #define SEVENSEGMENT_INVERT_DIGITS
 #define SEVENSEGMENT_USE_PORT
@@ -25,6 +34,7 @@ void setup()
 	
 	display.Begin();
 	
+	display.SetDot(2, true);
 	display.SetChr(0, 'L');
 	display.SetChr(1, 'O');
 	display.SetChr(2, 'A');

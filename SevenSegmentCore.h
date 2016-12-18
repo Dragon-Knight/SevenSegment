@@ -1,32 +1,11 @@
 /*
-	SevenSegmentCore.h - Класс динамической индикации семисегментного индикатора.
-	Автор: Dragon_Knight, 2016 ( https://vk.com/globalzone_edev ).
-	
-	Методы:
-		SevenSegmentCore:
-			В качестве первого параметра выступает массив пинов разрядов, слева направо.
-			В качестве второго параметра выступает или массив сегментов в общепринятом порядке, или ссылка на порт.
-		void SetPower(bool status) - Выключить экран, без очистки.
-		void SetChr(uint8_t position, char character) - Установить указанный символ в указанную позицию.
-		void SetNum(uint8_t position, uint8_t number) - Установить указанное число в указанную позицию.
-		void SetDot(uint8_t position, bool dot) - Установить\Снять точку в указанною позицию.
-		void SetRAW(uint8_t position, byte data) - Установить указанный байт в указанную позицию (Порядок бит как порядок сегментов).
-		void Clear() - Очистить экран.
-		void Lighting() - Обновление динамической индикации. Нужно вызывать с частотой не реже 20мс\сегмент.
-		void Dimming() - Принудительное гашение разрядя. Используется для настройки яркости.
-	Константы:
-		SEVENSEGMENT_USE_PORT - Включает указание порта в качестве пинов сегментом.
-		SEVENSEGMENT_INVERT_SEGMENTS - Включает инверсию анодов.
-		SEVENSEGMENT_INVERT_DIGITS - Включает инверсию катодов.
-	Примечания:
-		По умолчанию, аноды и катоды имеют включённое состояние - лог. 1, и выключенное состояние - лог. 0,
-		однако и аноды и катоды можно инвертировать. Для этого перед подключением класса используем константы.
-		Также для увеличения скорости работы индикатора в десятки раз добавлена возможность использовать порт,
-		в качестве сегментов инжектора. Порядок сегментов от младшего пина порта. Для включения этой возможности
-		используем определённую константу.
-		
-		Может работать как самостоятельный класс.
-*/
+ *	SevenSegmentCore.h
+ *	Core class of Seven Segment Indicator
+ *
+ *	@author		Nikolai Tikhonov aka Dragon_Knight <dubki4132@mail.ru>, https://vk.com/globalzone_edev
+ *	@licenses	MIT https://opensource.org/licenses/MIT
+ *	@repo		https://github.com/Dragon-Knight/SevenSegment
+ */
 
 #ifndef SevenSegmentCore_h
 #define SevenSegmentCore_h
@@ -40,6 +19,7 @@
 #define DIRECT_MODE_OUTPUT(base, mask)	((*((base)+1)) |= (mask))
 #define DIRECT_WRITE_LOW(base, mask)	((*((base)+2)) &= ~(mask))
 #define DIRECT_WRITE_HIGH(base, mask)	((*((base)+2)) |= (mask))
+#define bitWriteWO7(var1, var2)			((var1) = ((var1) & 0b10000000) | (0b01111111 & (var2)))
 
 template <uint8_t _digits>
 class SevenSegmentCore
@@ -103,7 +83,7 @@ class SevenSegmentCore
 		{
 			if(position < _digits)
 			{
-				this->_drawingData[position] = pgm_read_byte_near(&SEVENSEGMENTFONT[character] - 32);
+				bitWriteWO7(this->_drawingData[position], pgm_read_byte_near(&SEVENSEGMENTFONT[character] - 32));
 			}
 			
 			return;
@@ -113,7 +93,7 @@ class SevenSegmentCore
 		{
 			if(position < _digits)
 			{
-				this->_drawingData[position] = pgm_read_byte_near(&SEVENSEGMENTFONT[number] + 16);
+				bitWriteWO7(this->_drawingData[position], pgm_read_byte_near(&SEVENSEGMENTFONT[number] + 16));
 			}
 			
 			return;
@@ -123,14 +103,7 @@ class SevenSegmentCore
 		{
 			if(position < _digits)
 			{
-				if(dot == true)
-				{
-					this->_drawingData[position] |= pgm_read_byte_near(&SEVENSEGMENTFONT[46] - 32);
-				}
-				else
-				{
-					this->_drawingData[position] &= ~(pgm_read_byte_near(&SEVENSEGMENTFONT[46] - 32));
-				}
+				bitWrite(this->_drawingData[position], 7, dot);
 			}
 			
 			return;

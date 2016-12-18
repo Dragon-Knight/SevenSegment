@@ -1,14 +1,11 @@
 /*
-	SevenSegment.h - Класс семисегментного индикатора с динамической индикацией.
-	Автор: Dragon_Knight, 2016 ( https://vk.com/globalzone_edev ).
-	
-	Методы:
-		
-	Константы:
-		
-	Примечания:
-		
-*/
+ *	SevenSegment.h
+ *	Basic class of Seven Segment Indicator
+ *
+ *	@author		Nikolai Tikhonov aka Dragon_Knight <dubki4132@mail.ru>, https://vk.com/globalzone_edev
+ *	@licenses	MIT https://opensource.org/licenses/MIT
+ *	@repo		https://github.com/Dragon-Knight/SevenSegment
+ */
 
 #ifndef SevenSegment_h
 #define SevenSegment_h

@@ -1,7 +1,11 @@
 /*
-	SevenSegmentFont.h - Шрифт для семисегментного индикатора.
-	Автор: Dragon_Knight, 2016 ( https://vk.com/globalzone_edev ).
-*/
+ *	SevenSegmentFont.h
+ *	Fonts of Seven Segment Indicator
+ *
+ *	@author		Nikolai Tikhonov aka Dragon_Knight <dubki4132@mail.ru>, https://vk.com/globalzone_edev
+ *	@licenses	MIT https://opensource.org/licenses/MIT
+ *	@repo		https://github.com/Dragon-Knight/SevenSegment
+ */
 
 #ifndef SevenSegmentFont_h
 #define SevenSegmentFont_h

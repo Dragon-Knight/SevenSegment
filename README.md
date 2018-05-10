@@ -33,7 +33,7 @@
 | `void SetBrightness(uint8_t brightness)` | Установить яркость индикатором | `brightness` - Яркость |
 | `void SetNums(int32_t number)` | Установка числа (не реализовано) | `number` - Число |
 | `void SetNums(float number)` | Установка числа (не реализовано) | `number` - Число |
-| `void SetPower(bool status)` | Управление питанием индикатора | `status` - Включить или включить индикатор |
+| `void SetPower(bool status)` | Управление питанием индикатора | `status` - Включить или выключить индикатор |
 | `void SetChr(uint8_t position, char character)` | Установить символ в указанную позицию | `position` - Позиция<br>`character` - Символ |
 | `void SetNum(uint8_t position, uint8_t number)` | Установить цифру в указанную позицию | `position` - Позиция<br>`number` - Цифра |
 | `void SetDot(uint8_t position, bool dot)` | Установить\Снять точку в указанную позицию | `position` - Позиция<br>`dot` - Точка |
